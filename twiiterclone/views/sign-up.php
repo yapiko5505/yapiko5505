@@ -1,14 +1,20 @@
+<?php
+// 設定関連を読み込む
+include_once('../config.php');
+// 便利な関数を読み込む
+include_once('../util.php');
+
+?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="discription" content="ホーム画面です">
-    <link rel="icon" href="\TwittewrClone\views\img\logo-twitterblue.svg">
-    <!--Bootstrap CSS  -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <link href="\TwitterClone\views\css\style.css" rel="stylesheet">
     
+    <?php include_once('../views/common/head.php'); ?>
     <title>会員登録画面/twitterクローン</title>
     <meta name="description" content="会員登録画面です">
 </head>
@@ -29,7 +35,7 @@
 
         </form>
     </main>
-
+    <?php include_once('../views/common/foot.php'); ?>
 </body>
 
 </html>
