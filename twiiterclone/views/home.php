@@ -1,10 +1,24 @@
 <?php
-// 設定関連を読み込む
-include_once('../config.php');
-// 便利な関数を読み込む
-include_once('../util.php');
+// ホームコントローラー
+
+// 設定を読み込み
+include_once '../config.php';
+// 便利な関数を読み込み
+include_once '../util.php';
+
+// ログインしているか
+$user = getUserSession();
+if (!$user) {
+    // ログインしていない
+    header('Location:' . HOME_URL .'Controllers/sign-in.php');
+    exit;
+}
+
+// 画面表示
+$view_user = $user;
 
 // ツイート一覧作成
+// TODO:あとでDBから取得
 $view_tweets = [
     [
         'user_id' => 1,
@@ -31,58 +45,4 @@ $view_tweets = [
     ],
 ];
 
-?>
-
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    
-    <?php include_once('../views/common/head.php'); ?>
-    <title>ホーム画面/twitterクローン</title>
-    <meta name="discription" content="ホーム画面です">
-
-</head>
-<body class="home">
-    <div class="container">
-        <?php include_once('../views/common/side.php'); ?>
-        <div class="main">
-            <div class="main-header">
-                <h1>ホーム</h1>
-                
-            </div>
-            <div class="tweet-post">
-                <div class="my-icon">
-                    <img src="<?php echo HOME_URL; ?>views\img_uploaded\user\sample-person.jpg" alt="">
-                </div>
-                <div class="input-area">
-                    <form action="post.php" method="post" enctype="multipart/form-data">
-                        <textarea name="body" placeholder="いまどうしてる？" maxlength="140"></textarea>
-                        <div class="bottom-area">
-                            <div class="mb-0">
-                                <input type="file" name="image" class="form-control form-control-sm">
-                            </div>
-                            <button class="btn" type="submit">つぶやく</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-            <div class="ditch"></div>
-
-            <?php if (empty($view_tweets)): ?>
-                <p class="p-3">ツイートがまだありません</p>
-            <?php else: ?>
-                <div class="tweet-list">
-                    <?php foreach ($view_tweets as $view_tweet): ?>
-                        <?php include('../views/common/tweet.php'); ?>
-                    <?php endforeach; ?>
-
-                </div>
-            <?php endif;?>
-        </div>
-    </div>
-
-    <?php include_once('../views/common/foot.php'); ?>
-</body>
-
-</html>
+include_once '../views/home.php';

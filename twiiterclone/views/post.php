@@ -1,53 +1,41 @@
 <?php
-// 設定関連を読み込む
-include_once('../config.php');
-// 便利な関数を読み込む
-include_once('../util.php');
+// ポストコントローラー
 
+// 設定を読み込み
+include_once '../config.php';
+// 便利な関数を読み込み
+include_once '../util.php';
 
-?>
+// ツイートデータ操作モデルを読み込む
+include_once '../Models/tweets.php';
 
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    
-    <?php include_once('../views/common/head.php'); ?>
-    <title>つぶやく画面/twitterクローン</title>
-    <meta name="discription" content="つぶやく画面です">
+// ログインしているか
+$user = getUserSession();
+if (!$user) {
+    // ログインしていない
+    header('Location:' . HOME_URL .'Controllers/sign-in.php');
+    exit;
+}
 
-</head>
-<body class="home">
-    <div class="container">
-        <?php include_once('../views/common/side.php'); ?>
-        <div class="main">
-            <div class="main-header">
-                <h1>つぶやく</h1>
-                
-            </div>
-            <div class="tweet-post">
-                <div class="my-icon">
-                    <img src="<?php echo HOME_URL; ?>views\img_uploaded\user\sample-person.jpg" alt="">
-                </div>
-                <div class="input-area">
-                    <form action="post.php" method="post" enctype="multipart/form-data">
-                        <textarea name="body" placeholder="いまどうしてる？" maxlength="140"></textarea>
-                        <div class="bottom-area">
-                            <div class="mb-0">
-                                <input type="file" name="image" class="form-control form-control-sm">
-                            </div>
-                            <button class="btn" type="submit">つぶやく</button>
-                        </div>
-                    </form>
+// ツイートがある場合
+if (isset($_POST['body'])) {
+    $image_name = null;
+    if (isset($_FILES['image']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
+         $image_name = uploadImage($user, $_FILES['image'], 'tweet'); 
+    }
 
-                </div>
-            </div>
-            <div class="ditch"></div>
+    $data = [
+        'user_id' => $user['id'],
+        'body' => $_POST['body'],
+        'image_name' => $image_name,
+    ];
 
-
-        </div>
-    </div>
-
-    <?php include_once('../views/common/foot.php'); ?>
-</body>
-
-</html>
+     if(createTweet($data)) {
+        //  ホーム画面に遷移
+        header('Location: ' . HOME_URL . 'Controllers/home.php');
+        exit;
+     }
+}
+// 画面表示
+$view_user = $user;
+include_once '../views/post.php';
