@@ -1,38 +1,34 @@
 <?php
-// 設定関連を読み込む
-include_once('../config.php');
-// 便利な関数を読み込む
-include_once('../util.php');
+// サインインコントローラー
 
-?>
+// 設定を読み込み
+include_once '../config.php';
+// 便利な関数を読み込み
+include_once '../util.php';
 
+// ユーザーデータ操作モデルを読み込み
+include_once '../Models/users.php';
 
+// ログインチェック
+$try_login_result = null;
+if (isset($_POST['email']) && isset($_POST['password'])) {
+    // ログインチェック実行
+    $user = findUserAndCheckPassword($_POST['email'], $_POST['password']);
 
+    if ($user) {
+        // ログイン成功
+        // ユーザー情報をセッションに保存
+        saveUserSession($user);
 
-<!DOCTYPE html>
-<html lang="ja">
-<head>
+        // ホーム画面へ遷移
+        header('Location:' . HOME_URL . 'Controllers/home.php');
+        exit;
+    } else {
+        // ログイン失敗
+        $try_login_result = false;
+    }
+}
 
-    <?php include_once('../views/common/head.php'); ?>
-    <title>ログイン画面/twitterクローン</title>
-    <meta name="description" content="ログイン画面です">
-</head>
-
-<body class="signup text-center">
-    <main class="form-signup">
-        <form action="sign-in.php" metsod="post">
-            <img src="/twitterClone/views/img/logo-white.svg" alt="" class="logo-white">
-            <h1>Twitterクローンにログイン</h1>
-            <input type="email" class="form-control" name="email" placeholder="メールアドレス" require autofocus>
-            <input type="password" class="form-control" name="password" placeholder="パスワード" require>
-            <button class="w-100 btn btn-lg" type="submit">ログインする</button>
-            <p class="mt-3 mb-2"><a href="sign-up.php">会員登録する</a></p>
-            <p class="mt-2 mb-3 text-muted">&copy; 2021</p>
-
-
-        </form>
-    </main>
-    <?php include_once('../views/common/foot.php'); ?>
-</body>
-
-</html>
+// 画面表示
+$view_try_login_result = $try_login_result;
+include_once '../views/sign-in.php';
